@@ -104,13 +104,17 @@ def crear_lista(lista: schemas.ListCreate,
                 ):
     #se verifica que el tablero exista y pertenezca al usuario
     tablero = db.query(models.Board).filter(
-        models.Board.id == lista.board.id,
+        models.Board.id == lista.board_id,
         models.Board.propietario_id == current_user.id
     ).first()
     if not tablero:
         raise HTTPException(status_code=403, detail="No puedes crear listas en este tablero")
     
-    nueva_lista = models.List(**lista.dict())
+    nueva_lista = models.List(
+        titulo = lista.titulo,
+        orden = lista.orden,
+        board_id = lista.board_id
+    )
     db.add(nueva_lista)
     db.commit()
     db.refresh(nueva_lista)

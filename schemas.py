@@ -55,9 +55,15 @@ class CardResponse(CardBase):
     id: int
     list_id: int
     creado_por: int
-    
     class Config:
         from_attributes = True
+class CardUpdate(BaseModel):
+    titulo: Optional[str]
+    descripcion : Optional[str] = None
+    posicion: Optional[int] = 0
+    fecha_inicio: Optional[datetime] = None
+    fecha_vencimiento: Optional[datetime] = None
+    list_id: Optional[int]
         
 #card con todo su contenido response
 class CardInList(CardResponse):

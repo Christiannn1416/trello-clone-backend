@@ -77,17 +77,12 @@ def obtener_detalle_tablero(board_id: int,
                             db: Session = Depends(get_db),
                             current_user: models.User = Depends(get_current_user)
                             ):
-    #se filtra por id del tanlero e id propietario
     tablero = db.query(models.Board).filter(
         models.Board.id == board_id,
         models.Board.propietario_id == current_user.id
     ).first()
-    
-    if not tablero: #si el tablero no existe o no es del usuario
-        raise HTTPException(
-            status_code=404,
-            detail="Tablero no encontrado o no tienes permiso para verlo"
-        )
+    if not tablero:
+        raise HTTPException(status_code=404, detail="Tablero no encotrado")
     return tablero
 
 #mis tableros

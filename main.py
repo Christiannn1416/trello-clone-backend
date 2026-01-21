@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from database import engine
 import models
-from routers import users, boards
+from routers import users, boards, auth
 
 app = FastAPI(title="Trello Clone API")
 
@@ -12,6 +12,7 @@ def startup():
 
 app.include_router(users.router)
 app.include_router(boards.router)
+app.include_router(auth.router)
 
 @app.get("/")
 def root():

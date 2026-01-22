@@ -163,7 +163,9 @@ def eliminar_lista(
 ################################################CARDS##########################################################
 #crear card
 @router.post("/cards",response_model=schemas.CardResponse)
-def crear_card(card: schemas.CardCreate, db: Session = Depends(get_db),current_user: models.User = Depends(get_current_user)):
+def crear_card(card: schemas.CardCreate, 
+               db: Session = Depends(get_db),
+               current_user: models.User = Depends(get_current_user)):
     #obtener un usuario para el creador
     #usuario = db.query(models.User).first()
     #crear el objeto

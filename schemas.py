@@ -26,7 +26,6 @@ class CardBase(BaseModel):
     fecha_vencimiento: Optional[datetime] = None
 class CardCreate(CardBase):
     list_id: int
-    creado_por: int
 class CardResponse(BaseModel):
     id: int
     titulo: str

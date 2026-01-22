@@ -94,7 +94,6 @@ def listar_mis_tableros(
     tableros = db.query(models.Board).filter(models.Board.propietario_id == current_user.id)
     return tableros
 
-
 ###############################################LISTAS###############################################################
 #crear lista
 @router.post("/listas",response_model=schemas.ListResponse)
@@ -119,28 +118,28 @@ def crear_lista(lista: schemas.ListCreate,
     db.commit()
     db.refresh(nueva_lista)
     return nueva_lista
+
 #update lista
-@router.put("/{list_id}",response_model=schemas.ListResponse)
+@router.put("/listas/{list_id}",response_model=schemas.ListResponse)
 def actualizar_lista(
     list_id: int,
-    lista_update: schemas.ListCreate,
+    lista_update: schemas.ListUpdate,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)    
 ):
-    #verificar propiedad a través del tablero
-    lista_db = db.query(models.List).join(models.Board).filter(
-        models.List.id == list_id,
-        models.Board.propietario_id == current_user.id
-    ).first()
-    if not lista_db:
-        raise HTTPException(status_code=404, detail="Lista no encontrada")
+    #lista que tenga el id y que el usuario sea dueño del tablero
+    query = db.query(models.List).filter(
+        models.List.id == list_id)
+    list_db = query.first()
     
-    lista_db.nombre = lista_update.titulo
-    lista_db.orden = lista_update.orden
+    if not list_db:
+        raise HTTPException(status_code=404, detail="Tarjeta no encontrada o no tienes permisos")
     
+    datos_actualziados = lista_update.model_dump(exclude_unset=True)
+    query.update(datos_actualziados,synchronize_session=False)
     db.commit()
-    db.refresh(lista_db)
-    return lista_db
+    db.refresh(list_db)
+    return list_db
 
 #eliminar lista
 def eliminar_lista(
@@ -158,7 +157,6 @@ def eliminar_lista(
     db.delete(lista)
     db.commit()
     return None
-
 
 ################################################CARDS##########################################################
 #crear card
@@ -184,16 +182,44 @@ def crear_card(card: schemas.CardCreate,
     db.refresh(nueva_card)
     return nueva_card
 
-#update card
-@router.put("/{card_id}",response_model=schemas.CardResponse)
+#borrar card
+@router.delete("/cards/{card_id}")
+def eliminar_card(
+        card_id: int,
+        db: Session = Depends(get_db),
+        current_user: models.User = Depends(get_current_user)):   
+    card = db.query(models.Card).filter(
+        models.Card.id == card_id,
+        models.Card.creado_por == current_user.id).first()
+    if not card:
+        raise HTTPException(status_code=404, detail="Tarjeta no encontrada")
+
+    db.delete(card)
+    db.commit()
+    return{"message:" "Tarjeta eliminada"}
+
+@router.put("/cards/{card_id}")
 def actualizar_card(
     card_id: int,
-    card_update: schemas.CardUpdate,
+    card_actualizado: schemas.CardUpdate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    #verificar que la tarjeta pertenezca a un tablero del usuario
-    tarjeta_db: db.query(models.Card).join(models.List).join(models.Board).filter(
-        models.Card.id == card_id,
-        models.Board.propietario_id == current_user.id
-    ).first()
+    current_user: models.User = Depends(get_current_user)):
+    #tarjeta que tenga ese ID Y que pertenezca al usuario actual
+    query = db.query(models.Card).filter(
+        models.Card.id == card_id, 
+        models.Card.creado_por == current_user.id
+    )
+    card_db = query.first()
+
+    if not card_db:
+        raise HTTPException(
+            status_code=404, 
+            detail="Tarjeta no encontrada o no tienes permisos")
+    
+    #exclude_unset=True evita sobreescribir con nones campos que no se envían
+    datos_actualizados = card_actualizado.model_dump(exclude_unset=True)
+    query.update(datos_actualizados,
+                 synchronize_session=False)
+    db.commit()
+    db.refresh(card_db)
+    return card_db

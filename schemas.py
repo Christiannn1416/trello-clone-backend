@@ -40,7 +40,7 @@ class CardUpdate(BaseModel):
     posicion: Optional[int] = 0
     fecha_inicio: Optional[datetime] = None
     fecha_vencimiento: Optional[datetime] = None
-    list_id: Optional[int]      
+    list_id: Optional[int] = None
 #card con todo su contenido response
 class CardInList(CardResponse):
     pass
@@ -58,6 +58,9 @@ class ListResponse(BaseModel):
     cards: List[CardResponse] = [] #cards que tiene la lista
     class Config:
         from_attributes = True
+class ListUpdate(BaseModel):
+    titulo: Optional[str] = None
+    orden: Optional[int] = None
         
 #lista con sus cards
 class ListWithCards(ListResponse):

@@ -71,4 +71,4 @@ def eliminar_lista(
     
     db.delete(lista)
     db.commit()
-    return None
+    return {"message": "Borrado exitoso"}

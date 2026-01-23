@@ -10,16 +10,15 @@ origins = [
     "http://localhost",
     "http://localhost:3000", # Puerto común de React
     "http://localhost:5173", # Puerto común de Vite/Vue
-    "https://tu-frontend.vercel.app", # Cuando subas tu frontend, agrégalo aquí
     "*", # EL COMODÍN: Permite cualquier origen (útil para pruebas, pero úsalo con cuidado)
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Por ahora ponemos "*" para que no tengas problemas al probar
+    allow_origins=origins,            # Permite estos orígenes
     allow_credentials=True,
-    allow_methods=["*"], # Permite GET, POST, PUT, DELETE, etc.
-    allow_headers=["*"], # Permite todos los headers (incluyendo el de Authorization para el Token)
+    allow_methods=["*"],              # Permite todos los métodos (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],              # Permite todos los headers (incluyendo Authorization)
 )
 
 # Esto evita que el Swagger se congele si la DB tarda en responder

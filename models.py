@@ -25,7 +25,7 @@ class Board(Base):
     #permite acceder al dueño desde el objeto tablero
     propietario = relationship("User", back_populates = "tableros")
     #relación a listas
-    listas = relationship("List",back_populates="board", cascade="all, delete_orphan")
+    listas = relationship("List",back_populates="board", cascade="all, delete-orphan")
     
 #listas de cada tablero
 class List(Base):
@@ -37,7 +37,7 @@ class List(Base):
     #relacion una ista pertenece a un tablero
     board = relationship("Board", back_populates="listas")
     #relacion con las cards
-    cards = relationship("Card", back_populates = "lista", cascade="all, delete_orphan")
+    cards = relationship("Card", back_populates = "lista", cascade="all, delete-orphan")
     
 class Card(Base):
     __tablename__ = "cards"

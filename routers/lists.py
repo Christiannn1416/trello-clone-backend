@@ -56,7 +56,7 @@ def actualizar_lista(
     return list_db
 
 #eliminar lista
-@router.delete("/{list_id}",response_model=schemas.ListResponse)
+@router.delete("/{list_id}")
 def eliminar_lista(
     list_id: int,
     db: Session = Depends(get_db),

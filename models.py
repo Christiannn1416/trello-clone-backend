@@ -33,7 +33,7 @@ class List(Base):
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String, nullable = False)
     orden = Column(Integer, default = 0)
-    board_id = Column(Integer, ForeignKey("boards.id"), ondelete="CASCADE")
+    board_id = Column(Integer, ForeignKey("boards.id", ondelete="CASCADE"))
     #relacion una ista pertenece a un tablero
     board = relationship("Board", back_populates="listas")
     #relacion con las cards
@@ -47,7 +47,7 @@ class Card(Base):
     posicion = Column(Integer, default = 0)
     fecha_inicio = Column(DateTime)
     fecha_vencimiento = Column(DateTime)
-    list_id = Column(Integer,ForeignKey("lists.id"), ondelete="CASCADE")
+    list_id = Column(Integer,ForeignKey("lists.id", ondelete="CASCADE"))
     creado_por = Column(Integer, ForeignKey("users.id"))
     #relacion con la lista donde se encuentra
     lista = relationship("List", back_populates = "cards")

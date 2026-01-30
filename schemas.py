@@ -32,6 +32,8 @@ class CardResponse(BaseModel):
     descripcion: Optional[str]
     posicion: int
     list_id: int
+    fecha_inicio: Optional[datetime] = None
+    fecha_vencimiento: Optional[datetime] = None
     class Config:
         from_attributes = True
 class CardUpdate(BaseModel):
